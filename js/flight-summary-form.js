@@ -70,8 +70,8 @@ function renderCheckinForm(f, d){
                 >
                 <div class="method-toggle" style="width:100%;">
   <input type="hidden" id="ci_actZfwUnit" value="${esc(d0.actZfwUnit||"t")}">
-  <button type="button" class="method-btn ${(d0.actZfwUnit||"t")==="t"?"active":""}" data-method="t">Tonnen</button>
-  <button type="button" class="method-btn ${(d0.actZfwUnit||"t")==="l"?"active":""}" data-method="l">Liter</button>
+  <button type="button" class="method-btn ${(d0.actZfwUnit||"t")==="t"?"active":""}" data-method="t">Tonnes</button>
+  <button type="button" class="method-btn ${(d0.actZfwUnit||"t")==="l"?"active":""}" data-method="l">Litres</button>
 </div>
               </div>
             </div>
@@ -89,8 +89,8 @@ function renderCheckinForm(f, d){
                   style="width:100%;"
                 >
                 <div class="method-toggle" style="width:100%;">
-                  <input type="hidden" id="ci_fuelDiffUnit" value="${esc(d0.fuelDiffUnit||"t")}"><button type="button" class="method-btn ${(d0.fuelDiffUnit||"t")==="t"?"active":""}" data-method="t">Tonnen</button>
-                  <button type="button" class="method-btn ${(d0.fuelDiffUnit||"t")==="l"?"active":""}" data-method="l">Liter</button>
+                  <input type="hidden" id="ci_fuelDiffUnit" value="${esc(d0.fuelDiffUnit||"t")}"><button type="button" class="method-btn ${(d0.fuelDiffUnit||"t")==="t"?"active":""}" data-method="t">Tonnes</button>
+                  <button type="button" class="method-btn ${(d0.fuelDiffUnit||"t")==="l"?"active":""}" data-method="l">Litres</button>
                 </div>
               </div>
             </div>
