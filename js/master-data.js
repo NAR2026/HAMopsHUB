@@ -78,13 +78,13 @@ function combinedPeopleSection(ahs, tkAgents){
   return `<details class="md-section" data-md="people" ${isOpen?"open":""}>
     <summary><span class="md-icon">${ICONS.people}</span><span class="md-title">Agents</span><span class="md-count">${total}</span>${closeBtn}${chev}</summary>
     <div class="md-body">
-      <div class="md-info">Ramp / operations agents (AHS) and TK station agents. Both lists stay separate.</div>
-      <div style="font-size:12px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin:6px 0 8px;">AHS Agents · ${ahs.length}</div>
-      ${ahs.map((item,i) => `<div class="md-row"><div class="grow main">${esc(item)}</div><div class="actions"><button class="action-btn" onclick="openEditTagModal('ahsAgents', ${i}, true)" title="Edit">${ICONS.edit}</button><button class="action-btn danger" onclick="removeMasterTag('ahsAgents', ${i})" title="Delete">${ICONS.trash}</button></div></div>`).join("") || `<div style="color:var(--ink-3);font-size:13px;padding:4px 0;">No AHS agents yet.</div>`}
-      <div class="md-add" style="margin-bottom:18px;"><button class="btn btn-secondary btn-sm" onclick="openAddTagModal('ahsAgents', 'e.g. Judith', true)">Add AHS agent</button></div>
-      <div style="font-size:12px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin:6px 0 8px;">TK Station Agents · ${tkAgents.length}</div>
-      ${tkAgents.map((item,i) => `<div class="md-row"><div class="grow main">${esc(item)}</div><div class="actions"><button class="action-btn" onclick="openEditTagModal('tkAgents', ${i}, true)" title="Edit">${ICONS.edit}</button><button class="action-btn danger" onclick="removeMasterTag('tkAgents', ${i})" title="Delete">${ICONS.trash}</button></div></div>`).join("") || `<div style="color:var(--ink-3);font-size:13px;padding:4px 0;">No TK agents yet.</div>`}
-      <div class="md-add"><button class="btn btn-secondary btn-sm" onclick="openAddTagModal('tkAgents', 'e.g. TK Officer 3', true)">Add TK agent</button></div>
+      <div class="md-info">Ramp / operations agents and Airline agents. Both lists stay separate.</div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin:6px 0 8px;">Handling Agents · ${ahs.length}</div>
+      ${ahs.map((item,i) => `<div class="md-row"><div class="grow main">${esc(item)}</div><div class="actions"><button class="action-btn" onclick="openEditTagModal('ahsAgents', ${i}, true)" title="Edit">${ICONS.edit}</button><button class="action-btn danger" onclick="removeMasterTag('ahsAgents', ${i})" title="Delete">${ICONS.trash}</button></div></div>`).join("") || `<div style="color:var(--ink-3);font-size:13px;padding:4px 0;">No Handling agents yet.</div>`}
+      <div class="md-add" style="margin-bottom:18px;"><button class="btn btn-secondary btn-sm" onclick="openAddTagModal('ahsAgents', 'e.g. Judith', true)">Add Handling agent</button></div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin:6px 0 8px;">Airlines Agents · ${tkAgents.length}</div>
+      ${tkAgents.map((item,i) => `<div class="md-row"><div class="grow main">${esc(item)}</div><div class="actions"><button class="action-btn" onclick="openEditTagModal('tkAgents', ${i}, true)" title="Edit">${ICONS.edit}</button><button class="action-btn danger" onclick="removeMasterTag('tkAgents', ${i})" title="Delete">${ICONS.trash}</button></div></div>`).join("") || `<div style="color:var(--ink-3);font-size:13px;padding:4px 0;">No Airline agents yet.</div>`}
+      <div class="md-add"><button class="btn btn-secondary btn-sm" onclick="openAddTagModal('tkAgents', 'e.g. Airline Officer 3', true)">Add Airline agent</button></div>
     </div>
   </details>`;
 }
