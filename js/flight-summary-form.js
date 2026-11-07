@@ -1,11 +1,9 @@
 /* ============================================================
    Flight Summary Formm
    ============================================================ */
-function yesNoHtml(id, value){ const v = value || ""; return `<div class="yn" data-yn="${id}"><button type="button" class="${v==="YES"?"on-yes":""}" data-yn-val="YES">YES</button><button type="button" class="${v==="NO"?"on-no":""}" data-yn-val="NO">NO</button></div><input type="hidden" id="${id}" value="${esc(v)}">`; }
 function renderCheckinForm(f, d){
   const d0 = d || {};
-  const reqFp = d0.reqFp === "YES";
-  const fpMethod = d0.fpMethod || "ATOM";
+  const fpMethod = d0.fpMethod || "";
  
   return `
     <div class="form-section">
@@ -42,12 +40,7 @@ function renderCheckinForm(f, d){
         <div><h3>Flight plan</h3></div>
       </div>
       <div class="form-section-body">
-        <div class="row-yn">
-          <div class="label">New flight plan requested</div>
-          ${yesNoHtml("ci_reqFp", d0.reqFp)}
-        </div>
- 
-        <div id="ci_fpDetails" ${reqFp ? "" : "hidden"} style="margin-top:14px;">
+        <div id="ci_fpDetails">
  
           <div class="form-grid three">
  
@@ -423,12 +416,13 @@ document.addEventListener("click", e => {
   const mBtn = e.target.closest(".method-btn");
   if(mBtn){
   const group = mBtn.parentElement;
-  group.querySelectorAll(".method-btn").forEach(b => b.classList.remove("active"));
-  mBtn.classList.add("active");
   const hidden = group.parentElement.querySelector("input[type=hidden]");
+  const clearMethod = hidden && hidden.id === "ci_fpMethod" && hidden.value === mBtn.dataset.method;
+  group.querySelectorAll(".method-btn").forEach(b => b.classList.remove("active"));
+  if(!clearMethod) mBtn.classList.add("active");
   if(hidden){
     const oldUnit = hidden.value;
-    hidden.value = mBtn.dataset.method;
+    hidden.value = clearMethod ? "" : mBtn.dataset.method; 
     if(hidden.id === "ci_actZfwUnit" && oldUnit !== hidden.value){
       const el = $("ci_actZfw");
       if(el && el.value.trim()){ const p = parseMassInput(el.value, oldUnit); if(p.tons !== "") el.value = formatMassDisplay(p.tons, hidden.value); }
@@ -453,7 +447,7 @@ document.addEventListener("input", e => {
   if(t.id === "ci_closeTime"){ updateCloseStatus(); refreshPreviewSoon(); }
   if(["ci_cPax","ci_yPax","ci_cMeal","ci_yMeal"].includes(t.id)){ updateMealNotice(); refreshPreviewSoon(); }
   if(["ci_cba","ci_loaded","ci_remarks","ci_lateReason","ci_gate","ci_infPax"].includes(t.id)) refreshPreviewSoon();
-  if(t.id === "ci_reqFp"){ const box = $("ci_fpDetails"); if(box) box.hidden = t.value !== "YES"; refreshPreviewSoon(); }
+
   if(["ci_planId","ci_actZfw","ci_fuelDiff","ci_fpReqTime"].includes(t.id)) refreshPreviewSoon();
 
   // Live-Umschaltung Tonne/Liter beim Tippen (Wert wird NICHT umformatiert)
@@ -482,7 +476,7 @@ document.addEventListener("blur", e => {
   t.value = formatMassDisplay(parsed.tons, parsed.unit);
 }, true);
 function collectCheckin(){
-const base = { gate: ($("ci_gate")?.value || "").toUpperCase().trim(), closeTime: ($("ci_closeTime")?.value || "").replace(/[^\d]/g,""), lateReason: ($("ci_lateReason")?.value || "").trim(), reqFp: ($("ci_reqFp")?.value || ""), planId: ($("ci_planId")?.value || ""), actZfw: parseMassInput($("ci_actZfw")?.value, $("ci_actZfwUnit")?.value).tons, actZfwUnit: ($("ci_actZfwUnit")?.value || "t"), fuelDiff: parseMassInput($("ci_fuelDiff")?.value, $("ci_fuelDiffUnit")?.value).tons, fuelDiffUnit: ($("ci_fuelDiffUnit")?.value || "t"), fpReqTime: ($("ci_fpReqTime")?.value || ""), fpMethod: ($("ci_fpMethod")?.value || "ATOM"), cPax: ($("ci_cPax")?.value || ""), yPax: ($("ci_yPax")?.value || ""), infPax: ($("ci_infPax")?.value || ""), cMeal: ($("ci_cMeal")?.value || ""), yMeal: ($("ci_yMeal")?.value || ""), cba: ($("ci_cba")?.value || ""), loaded: ($("ci_loaded")?.value || ""), remarks: ($("ci_remarks")?.value || ""), noMealC: collectNoMealRows("C"), noMealY: collectNoMealRows("Y"), specials: collectSpecials() };
+const base = { gate: ($("ci_gate")?.value || "").toUpperCase().trim(), closeTime: ($("ci_closeTime")?.value || "").replace(/[^\d]/g,""), lateReason: ($("ci_lateReason")?.value || "").trim(), planId: ($("ci_planId")?.value || ""), actZfw: parseMassInput($("ci_actZfw")?.value, $("ci_actZfwUnit")?.value).tons, actZfwUnit: ($("ci_actZfwUnit")?.value || "t"), fuelDiff: parseMassInput($("ci_fuelDiff")?.value, $("ci_fuelDiffUnit")?.value).tons, fuelDiffUnit: ($("ci_fuelDiffUnit")?.value || "t"), fpReqTime: ($("ci_fpReqTime")?.value || ""), fpMethod: ($("ci_fpMethod")?.value || ""), cPax: ($("ci_cPax")?.value || ""), yPax: ($("ci_yPax")?.value || ""), infPax: ($("ci_infPax")?.value || ""), cMeal: ($("ci_cMeal")?.value || ""), yMeal: ($("ci_yMeal")?.value || ""), cba: ($("ci_cba")?.value || ""), loaded: ($("ci_loaded")?.value || ""), remarks: ($("ci_remarks")?.value || ""), noMealC: collectNoMealRows("C"), noMealY: collectNoMealRows("Y"), specials: collectSpecials() };
   base.specials = mergeNoMealStaffIntoSpecials(base.specials, base.noMealC, base.noMealY);
   return base;
 }
@@ -514,22 +508,23 @@ function buildCheckinMessageSync(f, d, useEmoji){
 
   lines.push("");
 
-  if(d.reqFp === "YES"){
-    lines.push(`${e("📋")}*NEW FLIGHT PLAN*`);
+  lines.push(`${e("📋")}*FLIGHT PLAN*`);
 
-    const rawPlanId = (d.planId || "").trim();
-    const planId = rawPlanId
-      ? (rawPlanId.length === 1 ? "0" + rawPlanId : rawPlanId)
-      : "—";
+  const rawPlanId = (d.planId || "").trim();
+  const planId = rawPlanId
+    ? (rawPlanId.length === 1 ? "0" + rawPlanId : rawPlanId)
+    : "—";
 
-    lines.push(`*Plan ID:* \`${planId}\``);
-    lines.push(`*AZFW:* ${d.actZfw || "0"}t -> *Diff:* ${d.fuelDiff || "0"}t`);
+  lines.push(`*Plan ID:* \`${planId}\``);
+  lines.push(`*AZFW:* ${d.actZfw || "0"}t -> *Diff:* ${d.fuelDiff || "0"}t`);
 
-    const rt = (d.fpReqTime || "").replace(/[^\d]/g, "");
-    lines.push(`Request at \`${rt || "----"}\` via ${d.fpMethod || "ATOM"}`);
+  const rt = (d.fpReqTime || "").replace(/[^\d]/g, "");
+  const requestDetails = [];
+  if(rt) requestDetails.push(`Request at \`${rt}\``);
+  if(d.fpMethod) requestDetails.push(`via ${d.fpMethod}`);
+  if(requestDetails.length) lines.push(requestDetails.join(" "));
 
-    lines.push("");
-  }
+  lines.push("");
 
   lines.push(`${e("⏱️")}*CHECK-IN INFORMATION*`);
 
