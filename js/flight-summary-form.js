@@ -1,5 +1,5 @@
 /* ============================================================
-   Flight Summary Form
+   Flight Summary Formm
    ============================================================ */
 function yesNoHtml(id, value){ const v = value || ""; return `<div class="yn" data-yn="${id}"><button type="button" class="${v==="YES"?"on-yes":""}" data-yn-val="YES">YES</button><button type="button" class="${v==="NO"?"on-no":""}" data-yn-val="NO">NO</button></div><input type="hidden" id="${id}" value="${esc(v)}">`; }
 function renderCheckinForm(f, d){
